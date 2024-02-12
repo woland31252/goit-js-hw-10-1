@@ -1,5 +1,7 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
 const refs = {
   input: document.getElementById('datetime-picker'),
@@ -11,7 +13,43 @@ const refs = {
 };
 
 let selectedDate;
-let intervID = null;
+let timerID = null;
+
+const iziWarning = {
+  title: 'Warning',
+  titleColor: 'red',
+  titleSize: '24px',
+  message: 'Please choose a date in the future',
+  messageSize: '16px',
+  displayMode: 'replace',
+  position: 'topCenter',
+};
+
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    console.log(selectedDates[0]);
+    selectedDate = selectedDates[0];
+    if (selectedDate <= new Date()) {
+      refs.button.disabled = true;
+      refs.input.disabled = true;
+      iziToast.show(iziWarning);
+    } else {
+      refs.button.disabled = false;
+      refs.input.disabled = false;
+    }
+  },
+};
+
+
+
+
+refs.button.addEventListener('click', handleTimerClick);
+
+flatpickr(refs.input, options);
 
 function convertMs(ms) {
   const second = 1000;
@@ -28,3 +66,36 @@ function convertMs(ms) {
   timerOff();
    
 };
+
+function handleTimerClick() {
+  timerID = setInterval(() => {
+    const difrDate = selectedDate - new Date().getTime();
+    convertMs(difrDate);
+  }, 1000)
+  refs.button.disabled = true;
+};
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, 0);
+}
+
+function addContent(obj) {
+  refs.day.textContent = `${addLeadingZero(obj.days)}`;
+  refs.hour.textContent = `${addLeadingZero(obj.hours)}`;
+  refs.minute.textContent = `${addLeadingZero(obj.minutes)}`;
+  refs.second.textContent = `${addLeadingZero(obj.seconds)}`;
+}
+
+function timerOff() {
+  if (refs.day.textContent === "00" &&
+    refs.hour.textContent === "00" &&
+    refs.minute.textContent === "00" &&
+    refs.second.textContent === "00"
+  ) {
+    clearInterval(timerID);
+    iziToast.info({
+      message: 'The countdown is over !',
+      position: 'topCenter',
+    });
+    }
+}
