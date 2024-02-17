@@ -4,10 +4,11 @@ form.addEventListener('submit', handleSnackOn);
 
 function handleSnackOn(event) {
     event.preventDefault();
-    const elem = event.target.elements;
+  const elem = event.target.elements;
+  console.log(elem);
     const state = elem.state.value;
     console.log(state)
-    makePromise({ delay: `${elem.delay.value}`, state: state})
+    makePromise({state: state, delay: `${elem.delay.value}`})
       .then(value =>
         console.log(`✅ Fulfilled promise in ${elem.delay.value}ms`)
       )
@@ -16,13 +17,13 @@ function handleSnackOn(event) {
       );
 };
 
-const makePromise = ({delay, shouldResolve}) => {
+const makePromise = ({value, delay}) => {
   return new Promise((resolve, reject) => {
 	   setTimeout(() => {
-				if(shouldResolve === 'fulfilled') {
-					resolve(delay)
+				if(value === "fulfilled") {
+					resolve(value)
 				} else {
-					reject(delay)
+					reject(value)
 				}
 			}, delay);
   });
