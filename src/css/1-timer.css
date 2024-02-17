@@ -38,3 +38,7 @@ button {
     font-weight: 300;
     line-height: 75px;
 }
+
+.block-button {
+    background-color: grey;
+}

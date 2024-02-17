@@ -36,7 +36,8 @@ const options = {
     if (selectedDate <= new Date()) {
       refs.button.disabled = true;
       refs.input.disabled = true;
-      iziToast.show(iziWarning);
+      refs.button.classList.add('block-button');
+            iziToast.show(iziWarning);
     } else {
       refs.button.disabled = false;
       refs.input.disabled = false;
@@ -73,6 +74,9 @@ function handleTimerClick() {
     convertMs(difrDate);
   }, 1000)
   refs.button.disabled = true;
+  refs.input.disabled = true;
+  refs.button.classList.add("block-button");
+
 };
 
 function addLeadingZero(value) {
